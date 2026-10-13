@@ -249,6 +249,6 @@ public class studymanagerapp {
 
     private static String truncate(String s, int maxLength) {
         if (s.length() <= maxLength) return s;
-        return s.substring(0, maxLength);
+        return s.substring(0, maxLength); //test before launching
     }
 }

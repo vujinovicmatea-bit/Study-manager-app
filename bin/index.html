@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudyPlanner</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef3f4;
+            color: #344044;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: linear-gradient(135deg, #26383d, #344d52);
+            color: white;
+            padding: 42px 20px;
+            border-bottom: 4px solid #2bc4b5;
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 38px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            margin: 10px 0 0;
+            color: #b8d1d0;
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 30px auto 60px;
+        }
+
+
+        /* =========================
+           DASHBOARD
+        ========================= */
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e0e8e9;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 6px 20px rgba(40, 60, 64, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #2bc4b5;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #849295;
+            font-weight: bold;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 8px;
+            color: #293b40;
+        }
+
+
+        /* =========================
+           CARDS
+        ========================= */
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 15px;
+            border: 1px solid #e0e8e9;
+            box-shadow: 0 7px 23px rgba(40, 60, 64, 0.06);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            margin: 0 0 20px;
+            color: #293b40;
+            font-size: 22px;
+        }
+
+
+        /* =========================
+           HEUTE
+        ========================= */
+
+        .today-box {
+            background: #e6f8f5;
+            border-left: 5px solid #2bc4b5;
+            padding: 18px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #315653;
+        }
+
+        .today-box strong {
+            color: #208f86;
+        }
+
+
+        /* =========================
+           HEUTE AUFGABEN
+        ========================= */
+
+        .today-task {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 0;
+            border-bottom: 1px solid #edf1f2;
+        }
+
+        .today-task:last-child {
+            border-bottom: none;
+        }
+
+        .today-task-name {
+            font-weight: 600;
+        }
+
+
+        /* =========================
+           FORMULAR
+        ========================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #465457;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d3dfe1;
+            border-radius: 9px;
+            background: #fafcfc;
+            color: #344044;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2bc4b5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(43, 196, 181, 0.12);
+        }
+
+        .form-button {
+            margin-top: 20px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 17px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .primary-button {
+            background: #27b8aa;
+            color: white;
+            padding: 13px 22px;
+        }
+
+        .primary-button:hover {
+            background: #209d91;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================
+           FILTER
+        ========================= */
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            flex: 1;
+        }
+
+        .filter-box {
+            width: 180px;
+        }
+
+
+        /* =========================
+           TABELLE
+        ========================= */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e0e7e8;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #35484d;
+            color: white;
+            padding: 14px 12px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #edf1f2;
+            text-align: center;
+            background: white;
+            color: #4e5c60;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover td {
+            background: #f2f9f8;
+        }
+
+
+        /* =========================
+           CHECKBOX
+        ========================= */
+
+        .check {
+            width: 19px;
+            height: 19px;
+            accent-color: #27b8aa;
+            cursor: pointer;
+        }
+
+        .completed-row td {
+            opacity: 0.55;
+        }
+
+        .completed-row .task-name {
+            text-decoration: line-through;
+        }
+
+
+        /* =========================
+           PRIORITÄTEN
+        ========================= */
+
+        .priority {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px 9px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .high {
+            color: #c94f4f;
+            background: #faeaea;
+        }
+
+        .medium {
+            color: #c17d22;
+            background: #fff2dd;
+        }
+
+        .low {
+            color: #278e79;
+            background: #e4f6f2;
+        }
+
+
+        /* =========================
+           DEADLINE
+        ========================= */
+
+        .urgent {
+            color: #c94f4f;
+            font-weight: bold;
+        }
+
+        .soon {
+            color: #c17d22;
+            font-weight: bold;
+        }
+
+        .normal {
+            color: #278e79;
+            font-weight: bold;
+        }
+
+        .expired {
+            color: #87549b;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           AKTIONEN
+        ========================= */
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .edit-button {
+            background: #e5f6f4;
+            color: #208f86;
+        }
+
+        .edit-button:hover {
+            background: #2bb8aa;
+            color: white;
+        }
+
+        .delete-button {
+            background: #f5eeee;
+            color: #c95757;
+        }
+
+        .delete-button:hover {
+            background: #c95757;
+            color: white;
+        }
+
+
+        /* =========================
+           FORTSCHRITT
+        ========================= */
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 13px;
+            background: #e5eded;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(
+                    90deg,
+                    #27b8aa,
+                    #55d1c4
+            );
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            margin-top: 12px;
+            color: #7b898c;
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           LEERE TABELLE
+        ========================= */
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #8a989b;
+        }
+
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 45, 48, 0.55);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 28px;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .cancel-button {
+            background: #edf1f2;
+            color: #526064;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 850px) {
+
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 30px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .filter-box {
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 10px 7px;
+                font-size: 12px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="header-content">
+
+        <h1>StudyPlanner</h1>
+
+        <p>
+            Organisiere deine Aufgaben und behalte deine Deadlines im Blick.
+        </p>
+
+    </div>
+
+</header>
+
+
+
+<div class="container">
+
+
+    <!-- =========================
+         DASHBOARD
+    ========================== -->
+
+    <div class="dashboard">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Alle Aufgaben
+            </div>
+
+            <div
+                    class="stat-number"
+                    id="totalTasks"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Offene Aufgaben
+            </div>
+
+            <div
+                    class="stat-number"
+                    id="openTasks"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Heute fällig
+            </div>
+
+            <div
+                    class="stat-number"
+                    id="todayTasks"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Erledigt
+            </div>
+
+            <div
+                    class="stat-number"
+                    id="completedTasks"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         HEUTE
+    ========================== -->
+
+    <div class="card">
+
+        <div class="today-box">
+
+            <strong>Heute ist:</strong>
+
+            <span id="currentDate"></span>
+
+        </div>
+
+
+        <h2>
+            Heute anstehend
+        </h2>
+
+
+        <div id="todayList">
+
+            <p style="color:#8a989b;">
+                Heute stehen keine Aufgaben an.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         NEUE AUFGABE
+    ========================== -->
+
+    <div class="card">
+
+        <h2>
+            Neue Aufgabe
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label for="taskName">
+                    Aufgabe
+                </label>
+
+                <input
+                        type="text"
+                        id="taskName"
+                        placeholder="z.B. Mathe Übung"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="priority">
+                    Priorität
+                </label>
+
+                <select id="priority">
+
+                    <option value="3">
+                        High
+                    </option>
+
+                    <option value="2">
+                        Medium
+                    </option>
+
+                    <option value="1">
+                        Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="deadline">
+                    Deadline
+                </label>
+
+                <input
+                        type="date"
+                        id="deadline"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-button">
+
+            <button
+                    class="primary-button"
+                    id="addTaskButton"
+            >
+                Aufgabe hinzufügen
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         AUFGABEN
+    ========================== -->
+
+    <div class="card">
+
+        <h2>
+            Meine Aufgaben
+        </h2>
+
+
+        <div class="toolbar">
+
+            <div class="search-box">
+
+                <input
+                        type="text"
+                        id="search"
+                        placeholder="Aufgabe suchen..."
+                >
+
+            </div>
+
+
+            <select
+                    class="filter-box"
+                    id="filter"
+            >
+
+                <option value="all">
+                    Alle Aufgaben
+                </option>
+
+                <option value="open">
+                    Offene Aufgaben
+                </option>
+
+                <option value="completed">
+                    Erledigte Aufgaben
+                </option>
+
+                <option value="high">
+                    High
+                </option>
+
+                <option value="medium">
+                    Medium
+                </option>
+
+                <option value="low">
+                    Low
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Erledigt
+                    </th>
+
+                    <th>
+                        Aufgabe
+                    </th>
+
+                    <th>
+                        Priorität
+                    </th>
+
+                    <th>
+                        Deadline
+                    </th>
+
+                    <th>
+                        Tage übrig
+                    </th>
+
+                    <th>
+                        Aktion
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="taskTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         FORTSCHRITT
+    ========================== -->
+
+    <div class="card">
+
+        <h2>
+            Dein Fortschritt
+        </h2>
+
+
+        <div class="progress-header">
+
+            <span>
+                Erledigte Aufgaben
+            </span>
+
+            <span id="progressPercent">
+                0%
+            </span>
+
+        </div>
+
+
+        <div class="progress-bar">
+
+            <div
+                    class="progress-fill"
+                    id="progressFill"
+            ></div>
+
+        </div>
+
+
+        <div
+                class="progress-text"
+                id="progressText"
+        >
+            Noch keine Aufgaben vorhanden.
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================
+     BEARBEITEN MODAL
+========================== -->
+
+<div
+        class="modal"
+        id="editModal"
+>
+
+    <div class="modal-content">
+
+        <h2>
+            Aufgabe bearbeiten
+        </h2>
+
+
+        <div class="form-group">
+
+            <label for="editName">
+                Aufgabe
+            </label>
+
+            <input
+                    type="text"
+                    id="editName"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="editPriority">
+                Priorität
+            </label>
+
+            <select id="editPriority">
+
+                <option value="3">
+                    High
+                </option>
+
+                <option value="2">
+                    Medium
+                </option>
+
+                <option value="1">
+                    Low
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="editDeadline">
+                Deadline
+            </label>
+
+            <input
+                    type="date"
+                    id="editDeadline"
+            >
+
+        </div>
+
+
+        <div class="modal-buttons">
+
+            <button
+                    class="cancel-button"
+                    onclick="closeEditModal()"
+            >
+                Abbrechen
+            </button>
+
+            <button
+                    class="primary-button"
+                    onclick="saveEdit()"
+            >
+                Speichern
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+    /* =========================
+       DATEN
+    ========================== */
+
+    let tasks =
+        JSON.parse(
+            localStorage.getItem("studyPlannerTasks")
+        ) || [];
+
+    let editingIndex = null;
+
+
+
+    /* =========================
+       DATUM
+    ========================== */
+
+    function getTodayString() {
+
+        const today = new Date();
+
+        const year =
+            today.getFullYear();
+
+        const month =
+            String(today.getMonth() + 1)
+                .padStart(2, "0");
+
+        const day =
+            String(today.getDate())
+                .padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+
+    }
+
+
+
+    function showCurrentDate() {
+
+        const today = new Date();
+
+        document
+            .getElementById("currentDate")
+            .textContent =
+            today.toLocaleDateString(
+                "de-DE",
+                {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric"
+                }
+            );
+
+    }
+
+
+
+    /* =========================
+       SPEICHERN
+    ========================== */
+
+    function saveTasks() {
+
+        localStorage.setItem(
+            "studyPlannerTasks",
+            JSON.stringify(tasks)
+        );
+
+    }
+
+
+
+    /* =========================
+       TAGE BERECHNEN
+    ========================== */
+
+    function calculateDaysLeft(deadline) {
+
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+
+
+        const deadlineDate =
+            new Date(deadline);
+
+        deadlineDate.setHours(0, 0, 0, 0);
+
+
+        const difference =
+            deadlineDate - today;
+
+
+        return Math.ceil(
+            difference /
+            (1000 * 60 * 60 * 24)
+        );
+
+    }
+
+
+
+    /* =========================
+       STATISTIKEN
+    ========================== */
+
+    function updateStatistics() {
+
+        const total =
+            tasks.length;
+
+
+        const completed =
+            tasks.filter(
+                task => task.completed
+            ).length;
+
+
+        const open =
+            total - completed;
+
+
+        const today =
+            tasks.filter(
+                task =>
+                    task.deadline === getTodayString()
+                    && !task.completed
+            ).length;
+
+
+        document.getElementById(
+            "totalTasks"
+        ).textContent = total;
+
+
+        document.getElementById(
+            "openTasks"
+        ).textContent = open;
+
+
+        document.getElementById(
+            "todayTasks"
+        ).textContent = today;
+
+
+        document.getElementById(
+            "completedTasks"
+        ).textContent = completed;
+
+    }
+
+
+
+    /* =========================
+       FORTSCHRITT
+    ========================== */
+
+    function updateProgress() {
+
+        const total =
+            tasks.length;
+
+
+        const completed =
+            tasks.filter(
+                task => task.completed
+            ).length;
+
+
+        let percent = 0;
+
+
+        if (total > 0) {
+
+            percent =
+                Math.round(
+                    (completed / total) * 100
+                );
+
+        }
+
+
+        document.getElementById(
+            "progressFill"
+        ).style.width =
+            percent + "%";
+
+
+        document.getElementById(
+            "progressPercent"
+        ).textContent =
+            percent + "%";
+
+
+        if (total === 0) {
+
+            document.getElementById(
+                "progressText"
+            ).textContent =
+                "Noch keine Aufgaben vorhanden.";
+
+        }
+
+        else {
+
+            document.getElementById(
+                "progressText"
+            ).textContent =
+                `${completed} von ${total} Aufgaben erledigt.`;
+
+        }
+
+    }
+
+
+
+    /* =========================
+       HEUTE-LISTE
+    ========================== */
+
+    function displayTodayTasks() {
+
+        const todayList =
+            document.getElementById(
+                "todayList"
+            );
+
+
+        const todayTasks =
+            tasks.filter(
+                task =>
+                    task.deadline === getTodayString()
+                    && !task.completed
+            );
+
+
+        if (todayTasks.length === 0) {
+
+            todayList.innerHTML = `
+                <p style="color:#8a989b;">
+                    Heute stehen keine Aufgaben an.
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        todayList.innerHTML = "";
+
+
+        todayTasks.forEach(task => {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "today-task";
+
+
+            const priority =
+                getPriority(task.priority);
+
+
+            div.innerHTML = `
+
+                <span class="today-task-name">
+                    ${escapeHTML(task.name)}
+                </span>
+
+                <span class="priority ${priority.class}">
+                    ${priority.text}
+                </span>
+
+            `;
+
+
+            todayList.appendChild(div);
+
+        });
+
+    }
+
+
+
+    /* =========================
+       PRIORITÄT
+    ========================== */
+
+    function getPriority(priority) {
+
+        if (priority === "3") {
+
+            return {
+                text: "High",
+                class: "high"
+            };
+
+        }
+
+
+        if (priority === "2") {
+
+            return {
+                text: "Medium",
+                class: "medium"
+            };
+
+        }
+
+
+        return {
+            text: "Low",
+            class: "low"
+        };
+
+    }
+
+
+
+    /* =========================
+       AUFGABEN ANZEIGEN
+    ========================== */
+
+    function displayTasks() {
+
+        const taskTable =
+            document.getElementById(
+                "taskTable"
+            );
+
+
+        taskTable.innerHTML = "";
+
+
+        const search =
+            document
+                .getElementById("search")
+                .value
+                .toLowerCase();
+
+
+        const filter =
+            document
+                .getElementById("filter")
+                .value;
+
+
+        let filteredTasks =
+            tasks
+                .map(
+                    (task, index) => ({
+                        task,
+                        index
+                    })
+                )
+                .filter(item => {
+
+                    const task =
+                        item.task;
+
+
+                    const matchesSearch =
+                        task.name
+                            .toLowerCase()
+                            .includes(search);
+
+
+                    let matchesFilter = true;
+
+
+                    if (filter === "open") {
+
+                        matchesFilter =
+                            !task.completed;
+
+                    }
+
+
+                    else if (
+                        filter === "completed"
+                    ) {
+
+                        matchesFilter =
+                            task.completed;
+
+                    }
+
+
+                    else if (
+                        filter === "high"
+                    ) {
+
+                        matchesFilter =
+                            task.priority === "3";
+
+                    }
+
+
+                    else if (
+                        filter === "medium"
+                    ) {
+
+                        matchesFilter =
+                            task.priority === "2";
+
+                    }
+
+
+                    else if (
+                        filter === "low"
+                    ) {
+
+                        matchesFilter =
+                            task.priority === "1";
+
+                    }
+
+
+                    return (
+                        matchesSearch &&
+                        matchesFilter
+                    );
+
+                });
+
+
+        /* Nach Deadline sortieren */
+
+        filteredTasks.sort(
+            (a, b) => {
+
+                return new Date(
+                        a.task.deadline
+                    ) -
+                    new Date(
+                        b.task.deadline
+                    );
+
+            }
+        );
+
+
+        if (
+            filteredTasks.length === 0
+        ) {
+
+            taskTable.innerHTML = `
+                <tr>
+                    <td
+                        colspan="6"
+                        class="empty"
+                    >
+                        Keine passenden Aufgaben gefunden.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        filteredTasks.forEach(
+            item => {
+
+                const task =
+                    item.task;
+
+                const index =
+                    item.index;
+
+
+                const daysLeft =
+                    calculateDaysLeft(
+                        task.deadline
+                    );
+
+
+                const priority =
+                    getPriority(
+                        task.priority
+                    );
+
+
+                let daysClass = "";
+                let daysText = "";
+
+
+                if (daysLeft < 0) {
+
+                    daysClass = "expired";
+                    daysText = "Überfällig";
+
+                }
+
+                else if (
+                    daysLeft === 0
+                ) {
+
+                    daysClass = "urgent";
+                    daysText = "Heute";
+
+                }
+
+                else if (
+                    daysLeft <= 3
+                ) {
+
+                    daysClass = "urgent";
+                    daysText =
+                        daysLeft + " Tage";
+
+                }
+
+                else if (
+                    daysLeft <= 7
+                ) {
+
+                    daysClass = "soon";
+                    daysText =
+                        daysLeft + " Tage";
+
+                }
+
+                else {
+
+                    daysClass = "normal";
+                    daysText =
+                        daysLeft + " Tage";
+
+                }
+
+
+                const formattedDate =
+                    new Date(
+                        task.deadline
+                    ).toLocaleDateString(
+                        "de-DE"
+                    );
+
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                if (task.completed) {
+
+                    row.classList.add(
+                        "completed-row"
+                    );
+
+                }
+
+
+                row.innerHTML = `
+
+                    <td>
+
+                        <input
+                            type="checkbox"
+                            class="check"
+                            ${task.completed ? "checked" : ""}
+                            onchange="toggleTask(${index})"
+                        >
+
+                    </td>
+
+
+                    <td class="task-name">
+
+                        ${escapeHTML(task.name)}
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="priority ${priority.class}"
+                        >
+                            ${priority.text}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        ${formattedDate}
+                    </td>
+
+
+                    <td class="${daysClass}">
+
+                        ${
+                    task.completed
+                        ? "Erledigt"
+                        : daysText
+                }
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="edit-button"
+                                onclick="openEditModal(${index})"
+                            >
+                                Bearbeiten
+                            </button>
+
+                            <button
+                                class="delete-button"
+                                onclick="deleteTask(${index})"
+                            >
+                                Löschen
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                `;
+
+
+                taskTable.appendChild(row);
+
+            }
+        );
+
+    }
+
+
+
+    /* =========================
+       HTML SICHER MACHEN
+    ========================== */
+
+    function escapeHTML(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
+
+    }
+
+
+
+    /* =========================
+       AUFGABE HINZUFÜGEN
+    ========================== */
+
+    function addTask() {
+
+        const taskName =
+            document
+                .getElementById("taskName")
+                .value
+                .trim();
+
+
+        const priority =
+            document
+                .getElementById("priority")
+                .value;
+
+
+        const deadline =
+            document
+                .getElementById("deadline")
+                .value;
+
+
+        if (taskName === "") {
+
+            alert(
+                "Bitte gib eine Aufgabe ein."
+            );
+
+            return;
+
+        }
+
+
+        if (deadline === "") {
+
+            alert(
+                "Bitte wähle eine Deadline aus."
+            );
+
+            return;
+
+        }
+
+
+        const newTask = {
+
+            name: taskName,
+
+            priority: priority,
+
+            deadline: deadline,
+
+            completed: false
+
+        };
+
+
+        tasks.push(newTask);
+
+
+        saveTasks();
+
+
+        document
+            .getElementById("taskName")
+            .value = "";
+
+
+        document
+            .getElementById("priority")
+            .value = "3";
+
+
+        document
+            .getElementById("deadline")
+            .value = "";
+
+
+        refresh();
+
+    }
+
+
+
+    /* =========================
+       ERLEDIGT / NICHT ERLEDIGT
+    ========================== */
+
+    function toggleTask(index) {
+
+        tasks[index].completed =
+            !tasks[index].completed;
+
+
+        saveTasks();
+
+
+        refresh();
+
+    }
+
+
+
+    /* =========================
+       LÖSCHEN
+    ========================== */
+
+    function deleteTask(index) {
+
+        if (
+            !confirm(
+                "Möchtest du diese Aufgabe wirklich löschen?"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        tasks.splice(index, 1);
+
+
+        saveTasks();
+
+
+        refresh();
+
+    }
+
+
+
+    /* =========================
+       BEARBEITEN
+    ========================== */
+
+    function openEditModal(index) {
+
+        editingIndex = index;
+
+
+        const task =
+            tasks[index];
+
+
+        document.getElementById(
+            "editName"
+        ).value =
+            task.name;
+
+
+        document.getElementById(
+            "editPriority"
+        ).value =
+            task.priority;
+
+
+        document.getElementById(
+            "editDeadline"
+        ).value =
+            task.deadline;
+
+
+        document.getElementById(
+            "editModal"
+        ).style.display =
+            "flex";
+
+    }
+
+
+
+    function closeEditModal() {
+
+        editingIndex = null;
+
+
+        document.getElementById(
+            "editModal"
+        ).style.display =
+            "none";
+
+    }
+
+
+
+    function saveEdit() {
+
+        if (
+            editingIndex === null
+        ) {
+
+            return;
+
+        }
+
+
+        const name =
+            document
+                .getElementById("editName")
+                .value
+                .trim();
+
+
+        const priority =
+            document
+                .getElementById("editPriority")
+                .value;
+
+
+        const deadline =
+            document
+                .getElementById("editDeadline")
+                .value;
+
+
+        if (
+            name === "" ||
+            deadline === ""
+        ) {
+
+            alert(
+                "Bitte fülle alle Felder aus."
+            );
+
+            return;
+
+        }
+
+
+        tasks[editingIndex].name =
+            name;
+
+
+        tasks[editingIndex].priority =
+            priority;
+
+
+        tasks[editingIndex].deadline =
+            deadline;
+
+
+        saveTasks();
+
+
+        closeEditModal();
+
+
+        refresh();
+
+    }
+
+
+
+    /* =========================
+       ALLES AKTUALISIEREN
+    ========================== */
+
+    function refresh() {
+
+        displayTasks();
+
+        displayTodayTasks();
+
+        updateStatistics();
+
+        updateProgress();
+
+    }
+
+
+
+    /* =========================
+       EVENTS
+    ========================== */
+
+    document
+        .getElementById("addTaskButton")
+        .addEventListener(
+            "click",
+            addTask
+        );
+
+
+    document
+        .getElementById("search")
+        .addEventListener(
+            "input",
+            displayTasks
+        );
+
+
+    document
+        .getElementById("filter")
+        .addEventListener(
+            "change",
+            displayTasks
+        );
+
+
+    /* Enter-Taste zum Hinzufügen */
+
+    document
+        .getElementById("taskName")
+        .addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    addTask();
+
+                }
+
+            }
+        );
+
+
+    /* Modal schließen */
+
+    document
+        .getElementById("editModal")
+        .addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target === this
+                ) {
+
+                    closeEditModal();
+
+                }
+
+            }
+        );
+
+
+    /* =========================
+       START
+    ========================== */
+
+    showCurrentDate();
+
+    refresh();
+
+</script>
+
+</body>
+</html>
