@@ -52,7 +52,6 @@ public class studymanagerapp {
     // MAIN METHODE
     // ==========================================
     public static void main(String[] args) {
-        addSubjectIfMissing("Kompetenz und Kooperation");
 
         System.out.println("==========================================");
         System.out.println("          WILLKOMMEN IM STUDY PLANNER");
@@ -80,18 +79,6 @@ public class studymanagerapp {
         }
 
         scanner.close();
-    }
-
-    private static void addSubjectIfMissing(String subject) {
-        String newSubject = subject.trim();
-        if (!newSubject.isEmpty() && !SUBJECTS.contains(newSubject)) {
-            SUBJECTS.add(newSubject);
-        }
-
-        System.out.println("\nFächerliste nach der Prüfung:");
-        for (int i = 0; i < SUBJECTS.size(); i++) {
-            System.out.println((i + 1) + ". " + SUBJECTS.get(i));
-        }
     }
 
     // ==========================================
