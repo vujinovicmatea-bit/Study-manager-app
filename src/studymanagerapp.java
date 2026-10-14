@@ -2,8 +2,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,11 +53,13 @@ public class studymanagerapp {
     private static final List<Task> tasks = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final Path TASKS_FILE = Paths.get("tasks.txt");
 
     // ==========================================
     // MAIN METHODE
     // ==========================================
     public static void main(String[] args) {
+        loadTasks();
 
         System.out.println("==========================================");
         System.out.println("          WILLKOMMEN IM STUDY PLANNER");
@@ -60,6 +68,10 @@ public class studymanagerapp {
         System.out.println("\nGespeicherte Fächer:");
         for (int i = 0; i < SUBJECTS.size(); i++) {
             System.out.println((i + 1) + ". " + SUBJECTS.get(i));
+        }
+
+        if (!tasks.isEmpty()) {
+            showTasks();
         }
 
         while (true) {
@@ -71,6 +83,7 @@ public class studymanagerapp {
                 addTask();
                 showTasks();
             } else if (answer.equals("nein") || answer.equals("n")) {
+                saveTasks();
                 System.out.println("\nStudy Planner beendet.");
                 break;
             } else {
@@ -79,6 +92,54 @@ public class studymanagerapp {
         }
 
         scanner.close();
+    }
+
+    private static void loadTasks() {
+        if (!Files.exists(TASKS_FILE)) {
+            return;
+        }
+
+        try {
+            for (String line : Files.readAllLines(TASKS_FILE, StandardCharsets.UTF_8)) {
+                String[] fields = line.split("\\t", -1);
+                if (fields.length != 4) {
+                    continue;
+                }
+
+                String subject = new String(Base64.getDecoder().decode(fields[0]), StandardCharsets.UTF_8);
+                String name = new String(Base64.getDecoder().decode(fields[1]), StandardCharsets.UTF_8);
+                String priority = new String(Base64.getDecoder().decode(fields[2]), StandardCharsets.UTF_8);
+                LocalDate deadline = LocalDate.parse(fields[3]);
+                long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), deadline);
+                int priorityValue = getPriorityValue(priority);
+                int deadlineValue = getDeadlineValue(daysLeft);
+                int score = priorityValue + deadlineValue;
+
+                tasks.add(new Task(subject, name, priority, deadline, daysLeft,
+                        priorityValue, deadlineValue, score));
+            }
+            System.out.println("\n" + tasks.size() + " Aufgabe(n) aus tasks.txt geladen.");
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("\nAufgaben konnten nicht vollstaendig geladen werden: " + e.getMessage());
+        }
+    }
+
+    private static void saveTasks() {
+        List<String> lines = new ArrayList<>();
+        for (Task task : tasks) {
+            lines.add(String.join("\t",
+                    Base64.getEncoder().encodeToString(task.subject.getBytes(StandardCharsets.UTF_8)),
+                    Base64.getEncoder().encodeToString(task.name.getBytes(StandardCharsets.UTF_8)),
+                    Base64.getEncoder().encodeToString(task.priority.getBytes(StandardCharsets.UTF_8)),
+                    task.deadline.toString()));
+        }
+
+        try {
+            Files.write(TASKS_FILE, lines, StandardCharsets.UTF_8);
+            System.out.println("Aufgaben wurden in tasks.txt gespeichert.");
+        } catch (IOException e) {
+            System.out.println("Aufgaben konnten nicht gespeichert werden: " + e.getMessage());
+        }
     }
 
     // ==========================================
