@@ -41,7 +41,7 @@ public class studymanagerapp {
         "English",
         "Programmieren",
         "Datenmanagement",
-        "Wirtschaftsinformatik"
+        "Wirtschaftsinformatik" //the subjects
     );
 
     private static final List<Task> tasks = new ArrayList<>();
